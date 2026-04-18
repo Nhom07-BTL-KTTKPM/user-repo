@@ -34,3 +34,8 @@ management:
     web:
       exposure:
         include: health,info
+
+security:
+  internal-service:
+    header-name: ${USER_SERVICE_INTERNAL_AUTH_HEADER_NAME:X-Internal-Api-Key}
+    api-key: ${USER_SERVICE_INTERNAL_AUTH_API_KEY:change-me-in-prod}

@@ -1,14 +1,20 @@
 package iuh.fit.userservice.user.controller;
 
-import iuh.fit.shared.api.ApiError;
 import iuh.fit.shared.api.ApiResponse;
 import iuh.fit.shared.trace.TraceIdConstants;
 import iuh.fit.userservice.user.dto.InternalUserAuthProfileResponse;
 import iuh.fit.userservice.user.dto.InternalUserRegisterRequest;
+import iuh.fit.userservice.user.service.InternalUserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,52 +22,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
+@Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/user/internal")
 public class InternalUserController {
+
+    private final InternalUserService internalUserService;
 
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<InternalUserAuthProfileResponse>> register(
             @Valid @RequestBody InternalUserRegisterRequest request,
             HttpServletRequest servletRequest
     ) {
-        ApiError error = new ApiError(
-                "NOT_IMPLEMENTED",
-                "MVP contract is locked. Register implementation will be added in next phase.",
-                Map.of("endpoint", "POST /api/v1/user/internal/register"),
-                null
-        );
-
-        ApiResponse<InternalUserAuthProfileResponse> payload = ApiResponse.failure(
-                "Endpoint is not implemented yet",
-                error,
+        InternalUserAuthProfileResponse profile = internalUserService.register(request);
+        ApiResponse<InternalUserAuthProfileResponse> payload = ApiResponse.success(
+            profile,
+            "User registered successfully",
                 resolveTraceId(servletRequest)
         );
 
-        return ResponseEntity.status(501).body(payload);
+        return ResponseEntity.status(HttpStatus.CREATED).body(payload);
     }
 
     @GetMapping(value = "/by-email", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<InternalUserAuthProfileResponse>> getByEmail(
-            @RequestParam("email") String email,
+            @RequestParam("email") @NotBlank @Email @Size(max = 255) String email,
             HttpServletRequest servletRequest
     ) {
-        ApiError error = new ApiError(
-                "NOT_IMPLEMENTED",
-                "MVP contract is locked. Get-by-email implementation will be added in next phase.",
-                Map.of("endpoint", "GET /api/v1/user/internal/by-email", "email", email),
-                null
-        );
-
-        ApiResponse<InternalUserAuthProfileResponse> payload = ApiResponse.failure(
-                "Endpoint is not implemented yet",
-                error,
+        InternalUserAuthProfileResponse profile = internalUserService.getByEmail(email);
+        ApiResponse<InternalUserAuthProfileResponse> payload = ApiResponse.success(
+            profile,
+            "User fetched successfully",
                 resolveTraceId(servletRequest)
         );
 
-        return ResponseEntity.status(501).body(payload);
+        return ResponseEntity.ok(payload);
     }
 
     private static String resolveTraceId(HttpServletRequest request) {
