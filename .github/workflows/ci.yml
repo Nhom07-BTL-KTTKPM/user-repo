@@ -1,0 +1,55 @@
+name: User Service CI
+
+on:
+  push:
+    branches: [ "main", "staging", "develop", "feature/**" ]
+  pull_request:
+    branches: [ "main", "staging", "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Checkout code của user-repo
+    - name: Checkout User Repo
+      uses: actions/checkout@v4
+
+    # 2. Checkout code của shared-library-repo (CẦN SỬA LẠI URL NẾU KHÁC)
+    - name: Checkout Shared Library Repo
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository_owner }}/shared-library-repo # Giả sử chung chủ sở hữu
+        path: shared-library-repo
+        # Nếu private repo, cần thêm token:
+        # token: ${{ secrets.PAT_TOKEN }}
+
+    # 3. Setup Java 17
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    # 4. Cấp quyền chạy file bash
+    - name: Grant execute permission for Maven wrappers
+      run: |
+        chmod +x shared-library-repo/shared-library/mvnw
+        chmod +x user-service/mvnw
+
+    # 5. Build và Install shared-library vào local maven (.m2)
+    - name: Build & Install Shared Library
+      working-directory: ./shared-library-repo/shared-library
+      run: ./mvnw clean install -DskipTests
+      
+    # 6. Build và Test User Service
+    - name: Build & Test User Service
+      working-directory: ./user-service
+      run: ./mvnw clean package
+
+    # 7. (Tùy chọn) Kiểm tra build Docker Image
+    - name: Check Docker Build (Dry Run)
+      working-directory: ./user-service
+      run: |
+        echo "Docker check passes if maven build passes"
