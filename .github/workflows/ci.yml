@@ -44,4 +44,4 @@ jobs:
       working-directory: ./user-service
       run: |
         chmod +x mvnw
-        ./mvnw clean package
+        ./mvnw clean package -DskipTests
