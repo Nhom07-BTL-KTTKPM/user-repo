@@ -10,6 +10,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: user_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - name: Checkout User Repo
       uses: actions/checkout@v4
@@ -42,6 +67,15 @@ jobs:
 
     - name: Build & Test User Service
       working-directory: ./user-service
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/user_db
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: postgres
+        SPRING_DATA_REDIS_HOST: localhost
+        SPRING_DATA_REDIS_PORT: 6379
+        EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
+        EUREKA_CLIENT_FETCH_REGISTRY: "false"
+        USER_SERVICE_INTERNAL_AUTH_API_KEY: fake-api-key-for-ci-testing
       run: |
         chmod +x mvnw
-        ./mvnw clean package -DskipTests
+        ./mvnw clean package
