@@ -16,6 +16,19 @@ spring:
       port: ${SPRING_DATA_REDIS_PORT:6379}
       password: ${SPRING_DATA_REDIS_PASSWORD:}
       timeout: ${SPRING_DATA_REDIS_TIMEOUT:2s}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+user:
+  rabbitmq:
+    critical-exchange: ${AUTH_RABBITMQ_CRITICAL_EXCHANGE:critical.exchange}
+    queue:
+      account-created: ${USER_RABBITMQ_ACCOUNT_CREATED_QUEUE:user.account.created.queue}
+    routing:
+      account-created: ${USER_RABBITMQ_ROUTING_ACCOUNT_CREATED:account.created}
 
 server:
   port: ${SERVER_PORT:8082}
