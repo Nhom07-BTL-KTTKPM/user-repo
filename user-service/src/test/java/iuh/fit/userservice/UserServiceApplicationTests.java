@@ -10,6 +10,7 @@ import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @SpringBootTest(properties = {
+    "spring.config.import=",
     "SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
     "SPRING_DATASOURCE_USERNAME=sa",
     "SPRING_DATASOURCE_PASSWORD=",
