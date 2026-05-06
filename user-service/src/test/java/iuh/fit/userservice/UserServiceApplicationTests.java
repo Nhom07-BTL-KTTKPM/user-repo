@@ -27,6 +27,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 @ActiveProfiles("test")
 class UserServiceApplicationTests {
 
+    static {
+        System.setProperty("SPRING_DATASOURCE_URL", "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL");
+        System.setProperty("spring.datasource.url", "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL");
+        System.setProperty("SPRING_DATASOURCE_USERNAME", "sa");
+        System.setProperty("SPRING_DATASOURCE_PASSWORD", "");
+        System.setProperty("SPRING_JPA_HIBERNATE_DDL_AUTO", "create-drop");
+    }
+
     @MockitoBean
     private RedisConnectionFactory redisConnectionFactory;
 
