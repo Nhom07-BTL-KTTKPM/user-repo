@@ -4,50 +4,52 @@ spring:
   application:
     name: user-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/user_db}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     open-in-view: false
   data:
     redis:
-      host: ${SPRING_DATA_REDIS_HOST:localhost}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
-      password: ${SPRING_DATA_REDIS_PASSWORD:}
-      timeout: ${SPRING_DATA_REDIS_TIMEOUT:2s}
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+      password: ${SPRING_DATA_REDIS_PASSWORD}
+      timeout: ${SPRING_DATA_REDIS_TIMEOUT}
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
 
 auth:
   jwt:
-    issuer: ${AUTH_JWT_ISSUER:auth-service}
-    secret: ${AUTH_JWT_SECRET:NUQyuZhoBd6u6O6dAP30Rgu5bqv5TdzpKreGhZGExSaHXEQIM3kicw9uptSaJP9Q}
+    issuer: ${AUTH_JWT_ISSUER}
+    secret: ${AUTH_JWT_SECRET}
 
 user:
   rabbitmq:
-    critical-exchange: ${AUTH_RABBITMQ_CRITICAL_EXCHANGE:critical.exchange}
+    critical-exchange: ${AUTH_RABBITMQ_CRITICAL_EXCHANGE}
     queue:
-      account-created: ${USER_RABBITMQ_ACCOUNT_CREATED_QUEUE:user.account.created.queue}
+      account-created: ${USER_RABBITMQ_ACCOUNT_CREATED_QUEUE}
     routing:
-      account-created: ${USER_RABBITMQ_ROUTING_ACCOUNT_CREATED:account.created}
+      account-created: ${USER_RABBITMQ_ROUTING_ACCOUNT_CREATED}
 
 server:
-  port: ${SERVER_PORT:8082}
+  port: ${SERVER_PORT}
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: ${EUREKA_DEFAULT_ZONE:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_DEFAULT_ZONE}
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: ${EUREKA_INSTANCE_PREFER_IP_ADDRESS}
+    ip-address: ${EUREKA_INSTANCE_IP_ADDRESS}
+    hostname: ${EUREKA_INSTANCE_HOSTNAME}
 
 management:
   endpoints:
@@ -57,5 +59,5 @@ management:
 
 security:
   internal-service:
-    header-name: ${USER_SERVICE_INTERNAL_AUTH_HEADER_NAME:X-Internal-Api-Key}
-    api-key: ${USER_SERVICE_INTERNAL_AUTH_API_KEY:change-me-in-prod}
+    header-name: ${USER_SERVICE_INTERNAL_AUTH_HEADER_NAME}
+    api-key: ${USER_SERVICE_INTERNAL_AUTH_API_KEY}
