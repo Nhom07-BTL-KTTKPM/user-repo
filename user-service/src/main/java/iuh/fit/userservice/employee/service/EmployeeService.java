@@ -32,7 +32,17 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(UUID id) {
-        return employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với id: " + id));
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy nhân viên với id: " + id));
+    }
+
+    public Employee getEmployeeByAccountId(String accountId) {
+        if (accountId == null || accountId.isBlank()) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "accountId không hợp lệ");
+        }
+
+        return employeeRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy nhân viên với accountId: " + accountId));
     }
 
     public List<Employee> getAllEmployees() {
@@ -77,7 +87,8 @@ public class EmployeeService {
     }
 
     public void updateEmployee(UUID id, EmployeeCreateRequest request) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với id: " + id));
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy nhân viên với id: " + id));
         try {
             employee.setFullName(request.getFullName());
             employee.setPhoneNumber(request.getPhoneNumber());
@@ -88,7 +99,8 @@ public class EmployeeService {
     }
 
     public void deleteEmployee(UUID id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với id: " + id));
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy nhân viên với id: " + id));
         try {
             employeeRepository.delete(employee);
         } catch (Exception e) {
