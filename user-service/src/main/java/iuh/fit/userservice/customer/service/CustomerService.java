@@ -34,10 +34,22 @@ public class CustomerService {
         Customer customer = customerRepository.findById(UUID.fromString(customerId))
             .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng với id: " + customerId));    
 
-        // Lấy dữ liệu từ object request
-        customer.setDateOfBirth(request.getDateOfBirth());
-        customer.setGender(request.getGender());
-        customer.setSkinType(request.getSkinType());
+        // Lấy dữ liệu từ object request (chi update field co gia tri)
+        if (request.getFullName() != null) {
+            customer.setFullName(request.getFullName());
+        }
+        if (request.getPhoneNumber() != null) {
+            customer.setPhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getDateOfBirth() != null) {
+            customer.setDateOfBirth(request.getDateOfBirth());
+        }
+        if (request.getGender() != null) {
+            customer.setGender(request.getGender());
+        }
+        if (request.getSkinType() != null) {
+            customer.setSkinType(request.getSkinType());
+        }
         
         customerRepository.save(customer);
     }
