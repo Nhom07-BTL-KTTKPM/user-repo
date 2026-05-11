@@ -28,6 +28,11 @@ public class AccountEventConsumer {
             key = "${user.rabbitmq.routing.account-created}"
     ))
     public void onAccountCreated(AccountRegisteredEvent event) {
+        if (!"CUSTOMER".equalsIgnoreCase(event.role())) {
+            log.info("[AccountEventConsumer] Skipping customer creation for role: {}", event.role());
+            return; 
+        }
+        
         log.info("[AccountEventConsumer] Received AccountRegisteredEvent for accountId={}", event.accountId());
         try {
             customerRepository.findByAccountId(event.accountId()).ifPresentOrElse(
