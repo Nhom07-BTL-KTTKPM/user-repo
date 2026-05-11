@@ -15,7 +15,7 @@ import iuh.fit.userservice.customer.entity.Address;
 import iuh.fit.userservice.customer.service.AddressService;
 
 @RestController
-@RequestMapping("/api/v1/addresses")
+@RequestMapping("/api/v1/user/addresses")
 public class AddressController {
 
     private final AddressService addressService;
