@@ -43,6 +43,16 @@ public class EmployeeController {
                 ApiResponse.success(employee, "Lấy thông tin nhân viên thành công", resolveTraceId()));
     }
 
+        @GetMapping("/account/{accountId}")
+        public ResponseEntity<ApiResponse<Employee>> getEmployeeByAccountId(
+            @PathVariable String accountId) {
+
+        Employee employee = employeeService.getEmployeeByAccountId(accountId);
+
+        return ResponseEntity.ok(
+            ApiResponse.success(employee, "Lấy thông tin nhân viên theo tài khoản thành công", resolveTraceId()));
+        }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<Employee>>> getAllEmployees() {
         
