@@ -12,7 +12,7 @@ import iuh.fit.userservice.customer.entity.Customer;
 import iuh.fit.userservice.customer.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 
-@Service    
+@Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
@@ -23,18 +23,19 @@ public class CustomerService {
     public Customer getCustomerById(String customerId) {
         UUID customerUuid = parseCustomerId(customerId);
         return customerRepository.findById(customerUuid)
-            .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy khách hàng"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy khách hàng"));
     }
 
     public Customer getCustomerByAccountId(String accountId) {
         return customerRepository.findByAccountId(accountId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy khách hàng"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy khách hàng"));
     }
 
     public void updateCustomerInfo(String customerId, CustomerUpdateRequest request) {
         UUID customerUuid = parseCustomerId(customerId);
         Customer customer = customerRepository.findById(customerUuid)
-            .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy khách hàng với id: " + customerId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND,
+                        "Không tìm thấy khách hàng với id: " + customerId));
 
         try {
             if (request.getFullName() != null) {
@@ -64,7 +65,8 @@ public class CustomerService {
     public void updateLoyaltyPoints(String customerId, int points) {
         UUID customerUuid = parseCustomerId(customerId);
         Customer customer = customerRepository.findById(customerUuid)
-            .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy khách hàng với id: " + customerId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND,
+                        "Không tìm thấy khách hàng với id: " + customerId));
 
         try {
             int newPoints = customer.getLoyaltyPoints() + points;
@@ -77,11 +79,11 @@ public class CustomerService {
         }
     }
 
-    
     public void addSkinConcern(String customerId, String skinConcern) {
         UUID customerUuid = parseCustomerId(customerId);
         Customer customer = customerRepository.findById(customerUuid)
-            .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "Không tìm thấy khách hàng với id: " + customerId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND,
+                        "Không tìm thấy khách hàng với id: " + customerId));
 
         try {
             List<String> skinConcerns = customer.getSkinConcerns();
