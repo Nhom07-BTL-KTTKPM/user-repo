@@ -2,6 +2,8 @@ package iuh.fit.userservice.customer.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 
@@ -42,9 +44,11 @@ public class CustomerService {
                 customer.setFullName(request.getFullName());
             }
             if (request.getPhoneNumber() != null) {
+                validatePhoneNumber(request.getPhoneNumber());
                 customer.setPhoneNumber(request.getPhoneNumber());
             }
             if (request.getDateOfBirth() != null) {
+                validateDateOfBirth(request.getDateOfBirth());
                 customer.setDateOfBirth(request.getDateOfBirth());
             }
             if (request.getGender() != null) {
@@ -52,6 +56,9 @@ public class CustomerService {
             }
             if (request.getSkinType() != null) {
                 customer.setSkinType(request.getSkinType());
+            }
+            if (request.getSkinConcerns() != null) {
+                customer.setSkinConcerns(new ArrayList<>(request.getSkinConcerns()));
             }
             customerRepository.save(customer);
         } catch (BusinessException e) {
@@ -104,6 +111,19 @@ public class CustomerService {
             return UUID.fromString(customerId);
         } catch (IllegalArgumentException e) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "customerId không hợp lệ");
+        }
+    }
+
+    private void validatePhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || !phoneNumber.matches("^(03|05|07|08|09)\\d{8}$")) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST,
+                    "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09");
+        }
+    }
+
+    private void validateDateOfBirth(LocalDate dateOfBirth) {
+        if (dateOfBirth.isAfter(LocalDate.now())) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "Ngày sinh không được là tương lai");
         }
     }
 }
