@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
+import iuh.fit.userservice.external.CartServiceClient;
 
 @Service
 public class AccountEventConsumer {
@@ -17,9 +18,11 @@ public class AccountEventConsumer {
     private static final Logger log = LoggerFactory.getLogger(AccountEventConsumer.class);
 
     private final CustomerRepository customerRepository;
+    private final CartServiceClient cartServiceClient;
 
-    public AccountEventConsumer(CustomerRepository customerRepository) {
+    public AccountEventConsumer(CustomerRepository customerRepository, CartServiceClient cartServiceClient) {
         this.customerRepository = customerRepository;
+        this.cartServiceClient = cartServiceClient;
     }
 
     @RabbitListener(bindings = @QueueBinding(
@@ -46,6 +49,13 @@ public class AccountEventConsumer {
                                 .build();
                         customerRepository.save(customer);
                         log.info("Successfully created Customer for accountId={}", event.accountId());
+                        
+                        try {
+                            cartServiceClient.createCart(new CartServiceClient.CreateCartRequest(customer.getId().toString()));
+                            log.info("Successfully requested Cart creation for customerId={}", customer.getId());
+                        } catch (Exception ex) {
+                            log.error("Failed to call cart-service for customerId={}", customer.getId(), ex);
+                        }
                     }
             );
         } catch (Exception e) {
