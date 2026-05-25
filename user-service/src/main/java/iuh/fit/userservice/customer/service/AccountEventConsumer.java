@@ -10,7 +10,6 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AccountEventConsumer {
@@ -18,6 +17,7 @@ public class AccountEventConsumer {
     private static final Logger log = LoggerFactory.getLogger(AccountEventConsumer.class);
 
     private final CustomerRepository customerRepository;
+
     public AccountEventConsumer(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
@@ -46,8 +46,6 @@ public class AccountEventConsumer {
                                 .build();
                         customerRepository.save(customer);
                         log.info("Successfully created Customer for accountId={}", event.accountId());
-                        
-                        // Do not pre-create cart here anymore as per user request
                     }
             );
         } catch (Exception e) {
