@@ -2,6 +2,8 @@ package iuh.fit.userservice.customer.entity;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -32,7 +34,10 @@ public class Customer {
     private String fullName;
     private String phoneNumber;
     private LocalDate dateOfBirth;
+    
+    @Enumerated(EnumType.STRING)
     private Gender gender;
+    
     private int loyaltyPoints = 0;
     private String skinType;
     @ElementCollection(fetch = FetchType.EAGER)
